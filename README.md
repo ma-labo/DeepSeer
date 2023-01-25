@@ -74,7 +74,7 @@ If you found our paper/code useful in your research, please consider citing:
 
 ## License
 
-This project is released under the [MIT license](https://github.com/momentum-lab-workspace/deepseer/blob/master/LICENSE).
+This project is released under the [MIT license](https://github.com/momentum-lab-workspace/deepseer/blob/main/LICENSE).
 
 ## Acknowledgement
 
