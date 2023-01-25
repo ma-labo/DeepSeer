@@ -25,8 +25,10 @@ function filter_node_data(trace, node_data) {
             filtered_node_data.push({
                 'id': node_data[i].id,
                 'size': node_data[i].size,
-                'positive': node_data[i].positive,
-                'negative': node_data[i].negative,
+                'world': node_data[i].world,
+                'sports': node_data[i].sports,
+                'business': node_data[i].business,
+                'scitech': node_data[i].scitech,
                 'visible': true
             })
         }
@@ -34,8 +36,10 @@ function filter_node_data(trace, node_data) {
             filtered_node_data.push({
                 'id': node_data[i].id,
                 'size': node_data[i].size,
-                'positive': node_data[i].positive,
-                'negative': node_data[i].negative,
+                'world': node_data[i].world,
+                'sports': node_data[i].sports,
+                'business': node_data[i].business,
+                'scitech': node_data[i].scitech,
                 'visible': false
             })
         }
@@ -46,8 +50,8 @@ function filter_node_data(trace, node_data) {
 export default class DiagramView extends Component {
     render() {
         const trace = this.props.trace
-        const node_data = filter_node_data(trace, require('../../data/node_data.json'))
-        const edge_data = trace === '' ? require('../../data/edge_data.json') : create_edge_data(trace)
+        const node_data = filter_node_data(trace, require('../../data/agnews/node_data.json'))
+        const edge_data = trace === '' ? require('../../data/agnews/edge_data.json') : create_edge_data(trace)
         const width = 1000
         const height = 600;
         return (

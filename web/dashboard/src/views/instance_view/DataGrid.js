@@ -15,13 +15,46 @@ import SentimentSatisfiedAltIcon from '@material-ui/icons/SentimentSatisfiedAlt'
 import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
 import StorageIcon from '@material-ui/icons/Storage';
 import PieChartIcon from '@material-ui/icons/PieChart';
-import PermIdentityIcon from '@material-ui/icons/PermIdentity';
-import ComputerIcon from '@material-ui/icons/Computer'
 import Box from '@material-ui/core/Box';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import {createMuiTheme} from '@material-ui/core/styles';
 import {makeStyles} from '@material-ui/styles';
+import PublicIcon from "@material-ui/icons/Public";
+import SportsBasketballIcon from "@material-ui/icons/SportsBasketball";
+import BusinessCenterIcon from "@material-ui/icons/BusinessCenter";
+import SettingsIcon from "@material-ui/icons/Settings";
+import PermIdentityIcon from "@material-ui/icons/PermIdentity";
+import ComputerIcon from '@material-ui/icons/Computer'
+
+let color_scheme = {
+    0: '#e91e63',
+    1: '#2196f3',
+    2: '#4caf50',
+    3: '#ffc107'
+}
+
+let convert_label_to_value = {
+    'World': 0,
+    'Sports': 1,
+    'Business': 2,
+    'Sci/Tech': 3
+}
+
+function getIcons(type) {
+    if (type === 0) {
+        return <PublicIcon/>
+    }
+    else if (type === 1) {
+        return <SportsBasketballIcon/>
+    }
+    else if (type === 2) {
+        return <BusinessCenterIcon/>
+    }
+    else {
+        return <SettingsIcon/>
+    }
+}
 
 const defaultTheme = createMuiTheme();
 const useStyles = makeStyles(
@@ -59,6 +92,9 @@ function getRegexPattern(texts) {
     else {
         let regexPattern = ''
         let splitTexts = texts.split(' ')
+        while (splitTexts[0] === '') {
+            splitTexts = splitTexts.slice(1, splitTexts.length)
+        }
         regexPattern = splitTexts.join('+.*')
         return regexPattern
     }
@@ -71,7 +107,7 @@ const ColourfulText = React.memo(function ColourfulText(props) {
     return (
         <div>
             <Box pl={pl} pr={2}>
-                <Typography variant="body2" display='inline' color={seq_label[0] === 0 ? 'primary' : 'secondary'} style={hp.has(0) ? {wordWrap: "break-word", backgroundColor: "yellow"} : {wordWrap: "break-word"}}>
+                <Typography variant="body2" display='inline' style={hp.has(0) ? {wordWrap: "break-word", backgroundColor: "yellow", color: color_scheme[seq_label[0]]} : {wordWrap: "break-word", color: color_scheme[seq_label[0]]}}>
                     {items.shift()}
                 </Typography>
                 {
@@ -81,7 +117,7 @@ const ColourfulText = React.memo(function ColourfulText(props) {
                                 <Typography variant="body2" display='inline' style={{wordWrap: "break-word", color: "grey"}}>
                                     {symbol}
                                 </Typography>
-                                <Typography variant="body2" display='inline' color={seq_label.slice(1, seq_label.length)[index] === 0 ? 'primary' : 'secondary'} style={hp.has(index + 1) ? {wordWrap: "break-word", backgroundColor: "yellow"} : {wordWrap: "break-word"}}>
+                                <Typography variant="body2" display='inline' style={hp.has(index + 1) ? {wordWrap: "break-word", backgroundColor: "yellow", color: color_scheme[seq_label.slice(1, seq_label.length)[index]]} : {wordWrap: "break-word", color: color_scheme[seq_label.slice(1, seq_label.length)[index]]}}>
                                     {item.slice(0,2) === '##' ? item.slice(2, item.length) : item}
                                 </Typography>
                             </Box>
@@ -119,7 +155,7 @@ const ShortColourfulText = React.memo(function ShortColourfulText(props) {
     return (
         <div>
             <Box pl={pl} pr={2}>
-                <Typography variant="body2" display='inline' color={label[0] === 0 ? 'primary' : 'secondary'} style={dynamic_hp.has(0) ? {wordWrap: "break-word", backgroundColor: "yellow"} : {wordWrap: "break-word"}}>
+                <Typography variant="body2" display='inline' style={dynamic_hp.has(0) ? {wordWrap: "break-word", backgroundColor: "yellow", color: color_scheme[color_scheme[label[0]]]} : {wordWrap: "break-word", color: color_scheme[color_scheme[label[0]]]}}>
                     {items.shift()}
                 </Typography>
                 {
@@ -129,7 +165,7 @@ const ShortColourfulText = React.memo(function ShortColourfulText(props) {
                                 <Typography variant="body2" display='inline' style={{wordWrap: "break-word", color: "grey"}}>
                                     {symbol}
                                 </Typography>
-                                <Typography variant="body2" display='inline' color={label.slice(1, label.length)[index] === 0 ? 'primary' : 'secondary'} style={dynamic_hp.has(index + 1) ? {wordWrap: "break-word", backgroundColor: "yellow"} : {wordWrap: "break-word"}}>
+                                <Typography variant="body2" display='inline' style={dynamic_hp.has(index + 1) ? {wordWrap: "break-word", backgroundColor: "yellow", color: color_scheme[label.slice(1, label.length)[index]]} : {wordWrap: "break-word", color: color_scheme[label.slice(1, label.length)[index]]}}>
                                     {item}
                                 </Typography>
                             </Box>
@@ -286,18 +322,13 @@ function QuickSearchToolbar(props) {
     const classes = useStyles();
 
     return (
+        <div>
         <div className={classes.root}>
             <div>
                 <GridToolbarFilterButton />
                 <GridToolbarDensitySelector />
                 <Button onClick={props.onDatasetChange} color='primary' startIcon={<StorageIcon />}>
                     {props.selectedDataset === 'train' ? <div><Box display='inline' fontWeight='fontWeightBold'>Train</Box>/Test</div> : <div>Train/<Box display='inline' fontWeight='fontWeightBold'>Test</Box></div>}
-                </Button>
-                <Button color='primary' startIcon={<PermIdentityIcon />}>
-                    {<div><Box display='inline' fontWeight='fontWeightBold'>Human Label</Box>{' Positive: ' + (props.pos_neg_label[1] - props.pos_neg_label[0]).toString() + ' / ' + 'Negative: ' + props.pos_neg_label[0].toString()}</div>}
-                </Button>
-                <Button color='primary' startIcon={<ComputerIcon />}>
-                    {<div><Box display='inline' fontWeight='fontWeightBold'>Prediction</Box>{' Positive: ' + (props.pos_neg_pred[1] - props.pos_neg_pred[0]).toString() + ' / ' + 'Negative: ' + props.pos_neg_pred[0].toString()}</div>}
                 </Button>
             </div>
             <Tooltip title="Add re' for regex matching." placement="top">
@@ -329,6 +360,15 @@ function QuickSearchToolbar(props) {
                 />
             </Tooltip>
         </div>
+            <div>
+                <Button color='primary' startIcon={<PermIdentityIcon />}>
+                    {<div><Box display='inline' fontWeight='fontWeightBold'>Human Label</Box>{' World: ' + (props.type_label[0]).toString() + ' / ' + 'Sports: ' + props.type_label[1].toString() + ' / ' + 'Business: ' + props.type_label[2].toString() + ' / ' + 'Sci-Tech: ' + props.type_label[3].toString()}</div>}
+                </Button>
+                <Button color='primary' startIcon={<ComputerIcon />}>
+                    {<div><Box display='inline' fontWeight='fontWeightBold'>Prediction</Box>{' World: ' + (props.type_pred[0]).toString() + ' / ' + 'Sports: ' + props.type_pred[1].toString() + ' / ' + 'Business: ' + props.type_pred[2].toString() + ' / ' + 'Sci-Tech: ' + props.type_pred[3].toString()}</div>}
+                </Button>
+            </div>
+        </div>
     );
 }
 
@@ -344,7 +384,18 @@ function getCorrectness(params) {
 }
 
 function getLabel(params) {
-    return params.value == 0 ? 'Positive' : 'Negative'
+    if (params.value === 0) {
+        return 'World'
+    }
+    else if (params.value === 1) {
+        return 'Sports'
+    }
+    else if (params.value === 2) {
+        return 'Business'
+    }
+    else {
+        return 'Sci/Tech'
+    }
 }
 
 export default function QuickFilteringGrid(data) {
@@ -382,34 +433,35 @@ export default function QuickFilteringGrid(data) {
         { field: 'pred',
             headerName: 'Prediction',
             width: 165,
-            valueFormatter: getLabel,
+            valueGetter: getLabel,
             renderCell: (params) => (
                 <Button
                     variant="outlined"
                     style={{maxWidth: '110px', minWidth: '110px',
-                        borderColor: (params.value === 0 ? '#2196f3' : '#b26500'),
-                        color: (params.value === 0 ? '#2196f3' : '#b26500')}}
+                        borderColor: color_scheme[convert_label_to_value[params.value]],
+                        color: color_scheme[convert_label_to_value[params.value]]}}
                     size="small"
-                    endIcon={params.value === 0 ? <SentimentSatisfiedAltIcon /> : <SentimentVeryDissatisfiedIcon /> }
+                    endIcon={getIcons(convert_label_to_value[params.value]) }
                     disabled={true}
                 >
-                    {getLabel(params)}
+                    {params.value}
                 </Button>
             ), },
         { field: 'label',
             headerName: 'Human Label',
             width: 165,
+            valueGetter: getLabel,
             renderCell: (params) => (
                 <Button
                     variant="outlined"
                     style={{maxWidth: '110px', minWidth: '110px',
-                        borderColor: (params.value === 0 ? '#2196f3' : '#b26500'),
-                        color: (params.value === 0 ? '#2196f3' : '#b26500')}}
+                        borderColor: color_scheme[convert_label_to_value[params.value]],
+                        color: color_scheme[convert_label_to_value[params.value]]}}
                     size="small"
-                    endIcon={params.value === 0 ? <SentimentSatisfiedAltIcon /> : <SentimentVeryDissatisfiedIcon /> }
+                    endIcon={getIcons(convert_label_to_value[params.value]) }
                     disabled={true}
                 >
-                    {getLabel(params)}
+                    {params.value}
                 </Button>
             ), },
         { field: 'correctness',
@@ -451,7 +503,7 @@ export default function QuickFilteringGrid(data) {
     }, [data_rows]);
 
     return (
-        <div style={{ height: 420, width: '100%' }}>
+        <div style={{ height: 460, width: '100%' }}>
             <DataGrid
                 onSelectionModelChange={newSelection=>{
                     select_row(newSelection)
@@ -474,8 +526,9 @@ export default function QuickFilteringGrid(data) {
                         clearSearch: () => {setSearchText(''); requestSearch('')},
                         onDatasetChange: () => data.handleDatasetChange(),
                         selectedDataset: data.selectedDataset,
-                        pos_neg_pred: [rows.reduce((a, b) => a + (b['pred'] || 0), 0), rows.length],
-                        pos_neg_label: [rows.reduce((a, b) => a + (b['label'] || 0), 0), rows.length]
+                        type_pred: [rows.reduce((a, b) => a + (b['pred'] === 0), 0), rows.reduce((a, b) => a + (b['pred'] === 1), 0), rows.reduce((a, b) => a + (b['pred'] === 2), 0), rows.reduce((a, b) => a + (b['pred'] === 3), 0)],
+                        type_label: [rows.reduce((a, b) => a + (b['label'] === 0), 0), rows.reduce((a, b) => a + (b['label'] === 1), 0), rows.reduce((a, b) => a + (b['label'] === 2), 0), rows.reduce((a, b) => a + (b['label'] === 3), 0)]
+
                     },
                 }}
             />

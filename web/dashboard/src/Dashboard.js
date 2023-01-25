@@ -29,14 +29,55 @@ import Chip from '@material-ui/core/Chip';
 import Avatar from '@material-ui/core/Avatar';
 import SentimentSatisfiedAltIcon from "@material-ui/icons/SentimentSatisfiedAlt";
 import SentimentVeryDissatisfiedIcon from "@material-ui/icons/SentimentVeryDissatisfied";
+import PublicIcon from '@material-ui/icons/Public';
+import SportsBasketballIcon from '@material-ui/icons/SportsBasketball';
+import BusinessCenterIcon from '@material-ui/icons/BusinessCenter';
+import SettingsIcon from '@material-ui/icons/Settings';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 
 const { Sider, Content, Footer } = Layout;
-const buggy_pattern = require('./data/buggy_pattern.json')
-const sentimental_pattern = require('./data/sentimental_pattern.json')
-const state_words = require('./data/state_words.json')
+const buggy_pattern = require('./data/agnews/buggy_pattern.json')
+const sentimental_pattern = require('./data/agnews/sentimental_pattern.json')
+const state_words = require('./data/agnews/state_words.json')
+
+let color_scheme = {
+    0: '#e91e63',
+    1: '#2196f3',
+    2: '#4caf50',
+    3: '#ffc107'
+}
+
+function getIcons(type) {
+    if (type === 0) {
+        return <PublicIcon/>
+    }
+    else if (type === 1) {
+        return <SportsBasketballIcon/>
+    }
+    else if (type === 2) {
+        return <BusinessCenterIcon/>
+    }
+    else {
+        return <SettingsIcon/>
+    }
+}
+
+function getLabel(type) {
+    if (type === 0) {
+        return 'World'
+    }
+    else if (type === 1) {
+        return 'Sports'
+    }
+    else if (type === 2) {
+        return 'Business'
+    }
+    else {
+        return 'Sci/Tech'
+    }
+}
 
 function removePound(str) {
     let new_str = ''
@@ -76,7 +117,7 @@ const ColourfulTrace = function ColourfulTrace(props) {
                             Input text:
                         </Typography>
                 }
-                <Typography variant="subtitle1" display='inline' color={seq_label[0] === 0 ? 'primary' : 'secondary'} style={{ wordWrap: "break-word"}}>
+                <Typography variant="subtitle1" display='inline' style={{ wordWrap: "break-word", color: color_scheme[seq_label[0]]}}>
                     {' ' + items.shift()}
                 </Typography>
                 {
@@ -86,7 +127,7 @@ const ColourfulTrace = function ColourfulTrace(props) {
                                 <Typography variant="subtitle1" display='inline' style={{wordWrap: "break-word", color: "grey"}}>
                                     {symbol}
                                 </Typography>
-                                <Typography variant="subtitle1" display='inline' color={seq_label.slice(1, seq_label.length)[index] === 0 ? 'primary' : 'secondary'} style={{wordWrap: "break-word"}}>
+                                <Typography variant="subtitle1" display='inline' style={{wordWrap: "break-word", color: color_scheme[seq_label.slice(1, seq_label.length)[index]]}}>
                                     {item.slice(0,2) === '##' ? item.slice(2, item.length) : item}
                                 </Typography>
                             </Box>
@@ -98,13 +139,13 @@ const ColourfulTrace = function ColourfulTrace(props) {
                     label === true ?
                         <Button
                             variant="outlined"
-                            style={{borderColor: (seq_label[seq_label.length - 1] === 0 ? '#2196f3' : '#b26500'),
-                                color: (seq_label[seq_label.length - 1] === 0 ? '#2196f3' : '#b26500')}}
+                            style={{borderColor: color_scheme[seq_label[seq_label.length - 1]],
+                                color: color_scheme[seq_label[seq_label.length - 1]]}}
                             size="small"
-                            endIcon={seq_label[seq_label.length - 1] === 0 ? <SentimentSatisfiedAltIcon /> : <SentimentVeryDissatisfiedIcon /> }
+                            endIcon={getIcons(seq_label[seq_label.length - 1])}
                             disabled={true}
                         >
-                            {seq_label[seq_label.length - 1] === 0 ? 'Positive' : 'Negative'}
+                            {getLabel(seq_label[seq_label.length - 1])}
                         </Button> : null
                 }
             </Box>
@@ -141,8 +182,8 @@ function checkIfContainSentiment(trace_to_plot, seq_labels, text) {
                 while ((trace_to_plot[j + k] === pattern[k]) && (k < pattern.length)) {
                     k += 1;
                 }
-                let sentimental = seq_labels.slice(j, j + k).reduce((a, b) => a + b)
-                if ((k === pattern.length) && (sentimental > 0) && (sentimental < k)) {
+                let sentimental = new Set(seq_labels.slice(j, j + k))
+                if ((k === pattern.length) && (sentimental.size > 1)) {
                     for (let w = 0; w < sentimental_pattern[i].mined_results.length; w ++){
                         if (sentimental_pattern[i].mined_results[w].text === text.slice(j, j + k).join(' ')) {
                             possible_buggy_pattern.add(pattern.join(' ') + '_' + i.toString() + '_' + text.slice(j, j + k).join(' '))
@@ -306,7 +347,7 @@ export default class Dashboard extends Component {
     }
 
     render() {
-        const data_rows = this.state.dataset === 'train' ? require('./data/training_data.json') : require('./data/test_data.json');
+        const data_rows = this.state.dataset === 'train' ? require('./data/agnews/training_data.json') : require('./data/agnews/test_data.json');
         const {selectedStates, selectedEdges, selectedPatterns, selectedTrace, textInput, deepStellarResult, searchText} = this.state;
         const searchRegexPatterns = new RegExp(selectedPatterns.split('_')[0], 'i');
         const regexPattern = selectedStates === 'all' ? '' : getRegexPattern(selectedStates)
@@ -332,7 +373,7 @@ export default class Dashboard extends Component {
         const id = open ? 'simple-popover' : undefined;
         return (
             <div>
-                <AppBar position="static" >
+                <AppBar position="static">
                     <Toolbar>
                         <IconButton edge="start" color="inherit" aria-label="menu">
                             <MenuIcon />
@@ -342,8 +383,8 @@ export default class Dashboard extends Component {
                         </Typography>
                     </Toolbar>
                 </AppBar>
-                <Layout style={{ height: 1200, backgroundColor: '#f9f9f9' }}>
-                    <Layout style={{ height: 800, backgroundColor: '#f9f9f9' }}>
+                <Layout style={{ height: 1200, backgroundColor: '#f9f9f9'  }}>
+                    <Layout style={{ height: 800, backgroundColor: '#f9f9f9'  }}>
                         <Content>
                             <div>
                                 <Box p={1} ml={2}>
@@ -430,9 +471,13 @@ export default class Dashboard extends Component {
                                     <Grid item x={7}>
                                         <Box p={1} ml={2}>
                                             <Box pt={1} pb={1}>
-                                                <Chip label="Positive" color="primary" style={{maxWidth: '80px', minWidth: '80px'}}/>
+                                                <Chip label="World" style={{backgroundColor: '#e91e63', maxWidth: '80px', minWidth: '80px'}}/>
                                                 {' '}
-                                                <Chip label="Negative" color="secondary" style={{maxWidth: '80px', minWidth: '80px'}}/>
+                                                <Chip label="Sports" style={{backgroundColor: '#2196f3', maxWidth: '80px', minWidth: '80px'}}/>
+                                                {' '}
+                                                <Chip label="Business" style={{backgroundColor: '#4caf50', maxWidth: '80px', minWidth: '80px'}}/>
+                                                {' '}
+                                                <Chip label="Sci/Tech" style={{backgroundColor: '#ffc107', maxWidth: '80px', minWidth: '80px'}}/>
                                             </Box>
                                         </Box>
                                     </Grid>
@@ -475,9 +520,6 @@ export default class Dashboard extends Component {
                                                 <CardContent>
                                                     <Typography color="textSecondary" gutterBottom>
                                                         State: {selectedStates}
-                                                    </Typography>
-                                                    <Typography variant="h7" component="h7" style={{ fontWeight: 600 }}>
-                                                        associated words and phrases
                                                     </Typography>
                                                     <Grid container spacing={0}>
                                                         <Grid item xs={6}>
@@ -525,7 +567,7 @@ export default class Dashboard extends Component {
                             </Box>
                         </Sider>
                     </Layout>
-                    <Layout style={{ height: 500, backgroundColor: '#f9f9f9' }}>
+                    <Layout style={{ height: 500, backgroundColor: '#f9f9f9'  }}>
                         <Box p={1} ml={2}>
                             <Typography variant="h5" color="primary">
                                 Instance
@@ -537,7 +579,7 @@ export default class Dashboard extends Component {
                         </Box>
                     </Layout>
                 </Layout>
-                <Footer style={{backgroundColor: '#f9f9f9'}}>
+                <Footer style={{ backgroundColor: '#f9f9f9' }}>
                     <div style={{
                         display: 'flex',
                         alignItems: 'center',
