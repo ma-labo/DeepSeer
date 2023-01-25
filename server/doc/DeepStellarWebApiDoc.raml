@@ -1,0 +1,26 @@
+#%RAML 1.0
+title: DeepStellarWeb API Documentation
+version: 1
+baseUri: http://127.0.0.1:5000/
+documentation:
+  - title: DeepStellarWeb API Documentation
+    content: |
+      DeepStellarWeb API Documentation
+/api/v1/predict/:
+  description: Call DeepStellar Backend
+  get:
+    queryParameters:
+      input:
+        required: true
+        displayName: input
+        description: 'The sentence passed into DeepStellar for analyze'
+        type: string
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {
+                "input_trace": [3, 4, 5, 3, 3],
+                "prediction": 0
+              }

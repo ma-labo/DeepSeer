@@ -1,0 +1,11 @@
+graphviz
+matplotlib
+joblib
+sklearn
+torch
+torchtext
+torchvision
+easydict
+pandas
+seaborn
+transformers

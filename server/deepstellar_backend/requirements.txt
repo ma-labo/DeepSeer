@@ -1,0 +1,11 @@
+joblib
+scikit-learn
+torch
+torchtext
+torchvision
+easydict
+pandas
+transformers
+flask-restful
+flask-cors
+Flask
