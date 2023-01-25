@@ -1,6 +1,6 @@
-model_checkpoint = "File/checkpoint/agnews_ckpt_best.pth"
-model_arch = "SimpleGRUMultiClassification" # ["SimpleGRU", "SimpleGRUTranslation", "SimpleGRUMultiClassification", "SimpleLSTM"]
-deepstellar_path = "File/profile/deep_stellar_p_20_s_39_agnews.profile"
+model_checkpoint = "File/checkpoint/quora_ckpt_best.pth"
+model_arch = "SimpleGRU" # ["SimpleGRU", "SimpleGRUTranslation", "SimpleGRUMultiClassification", "SimpleLSTM"]
+deepstellar_path = "File/profile/deep_stellar_p_20_s_39_quora.profile"
 tokenizer_cache = "File/cache/"
 token_model_name = "bert-base-uncased"
 device = "cpu"

@@ -97,7 +97,7 @@ class DeepstellarPredictor():
         hidden_states = hidden_states.cpu().numpy()[0][mask_ == 1.]
         input_pca = self.deep_stellar_model.pca.do_reduction([hidden_states])
         input_trace = self.deep_stellar_model.get_trace(input_pca)
-        prediction = torch.argmax(pred_tensor[0], dim=-1, keepdim=True).cpu().numpy()
+        prediction = pred_tensor[0].cpu().numpy() >= 0.5
         prediction = prediction.astype(int)
         pred = prediction[mask_ == 1.][-1][0]
         seq_label = prediction[mask_ == 1.].reshape(-1)

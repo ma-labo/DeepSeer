@@ -51,8 +51,8 @@ const draw = (props) => {
     const width = props.width - margin.left - margin.right;
     const height = props.height - margin.top - margin.bottom;
 
-    let color = d3.scaleLinear().domain([0, 1, 2, 3])
-        .range(["#e91e63", "#2196f3", "#4caf50", "#ffc107"])
+    let color = d3.scaleLinear().domain([0,0.8,1])
+        .range(["#f50057", "#673ab7", "#2196f3"])
 
     let svg = d3.select('.vis-diagramchart')
         .append('svg')
@@ -79,7 +79,7 @@ const draw = (props) => {
         .duration(200)
         tooltip
         .style("opacity", 1)
-        .html("Node: " + d.id + ', World: ' + d.world + ', Sports: ' + d.sports + ', Business: ' + d.business + ', Sci/Tech: ' + d.scitech)
+        .html("Node: " + d.id + ', Sincere: ' + d.positive + ', Insincere: ' + d.negative)
         .style("position", "absolute")
         .style("z-index", 10)
     }
@@ -140,7 +140,7 @@ const draw = (props) => {
     }
 
     node.append("circle")
-        .attr("fill", d => color([[d.world, 0], [d.sports, 1], [d.business, 2], [d.scitech, 3]].sort(function(a, b){return a[0] - b[0]})[3][1]))
+        .attr("fill", d => color((d.positive / (d.positive + d.negative))))
         .attr("stroke", "white")
         .attr("r", d => d.size)
         .on("click", clicked)
