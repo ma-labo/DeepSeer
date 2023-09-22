@@ -66,9 +66,17 @@ If you found our paper/code useful in your research, please consider citing:
 ```
 @inproceedings{wang2023deepseer,
  author = {Wang, Zhijie and Huang, Yuheng and Song, Da and Ma, Lei and Zhang, Tianyi},
- title = {DeepSeer: Interactive RNN Explanation and Debugging via State Abstraction},
- booktitle = {Proceedings of the 2023 CHI Conference on Human Factors in Computing Systems},
- year = {2023},
+ title = {DeepSeer: Interactive RNN Explanation and Debugging via State Abstraction}, 
+ year = {2023}, 
+ isbn = {9781450394215}, 
+ publisher = {Association for Computing Machinery}, 
+ address = {New York, NY, USA},
+ doi = {10.1145/3544548.3580852},
+ booktitle = {Proceedings of the 2023 CHI Conference on Human Factors in Computing Systems}, 
+ articleno = {740}, 
+ numpages = {20}, 
+ location = {Hamburg, Germany}, 
+ series = {CHI '23}
 } 
 ```
 
